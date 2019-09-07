@@ -18,11 +18,11 @@ Page {
     Button {
         id: displayButton
         anchors.top: parent.top
-        anchors.topMargin: 60
+        anchors.topMargin: 30
         anchors.horizontalCenter: parent.horizontalCenter
         width: 120
         height: 120
-        onClicked: {
+        onPressed: {
             controlHandler.displayClicked();
         }
         background: Image {
@@ -36,85 +36,33 @@ Page {
         }
     }
 
-    Button {
-        id: volumeUpButton
-
-    }
-
-    Button {
+    // Volume button with animation
+    ArrowButton {
         id: volumeDownButton
         anchors.top: speakerButton.bottom
-        anchors.topMargin: 10
+        anchors.topMargin: 25
         anchors.left: parent.left
-        anchors.leftMargin: 45
-        width: 50;
-        height: 50
-        background: Image {
-            id:volumeDownButtonImage
-            rotation: 180
-            anchors.fill: parent
-            source: "qrc:/icons/Arrow/arrow1.png"
-        }
+        anchors.leftMargin: 50
+        rotation: 180
+    }
 
-        onPressed: {
-            volumeDownButtonAnimation.visible = true
-            volumeDownButtonAnimation.playing = true
-            volumeDownButtonImage.visible = false;
-        }
-        onReleased: {
-
-        }
-
-        AnimatedImage {
-            playing: false
-            visible: false
-            id:volumeDownButtonAnimationPressed
-            rotation: 180
-            width: parent.width
-            height: parent.height
-            source: "qrc:/icons/Arrow/arrow_animation_pressed.gif"
-            speed: 10.0
-            onFrameChanged:{
-               console.log(currentFrame)
-               if(currentFrame == 15) {
-                   volumeDownButtonAnimation.visible = false
-                   volumeDownButtonAnimation.playing = false
-                   volumeDownButtonImage.visible = true
-               }
-
-            }
-        }
-
-        AnimatedImage {
-            playing: false
-            visible: false
-            id:volumeDownButtonAnimationReleased
-            rotation: 180
-            width: parent.width
-            height: parent.height
-            source: "qrc:/icons/Arrow/arrow_animation_released.gif"
-            speed: 10.0
-            onFrameChanged:{
-               console.log(currentFrame)
-               if(currentFrame == 15) {
-                   volumeDownButtonAnimation.visible = false
-                   volumeDownButtonAnimation.playing = false
-                   volumeDownButtonImage.visible = true
-               }
-
-            }
-        }
+    ArrowButton {
+        id: volumeUpButtown
+        anchors.bottom: speakerButton.top
+        anchors.bottomMargin: 0
+        anchors.left: parent.left
+        anchors.leftMargin: 50
     }
 
     Button {
         id: speakerButton
         anchors.top: displayButton.bottom
-        anchors.topMargin: 20
+        anchors.topMargin: 30
         anchors.left: parent.left
         anchors.leftMargin: (parent.width*0.05)
         width: 120;
         height: 120;
-        onClicked: {
+        onPressed: {
             controlHandler.audioClicked();
         }
 
@@ -131,12 +79,12 @@ Page {
     Button {
         id: lightsButton
         anchors.top: displayButton.bottom
-        anchors.topMargin: 32
+        anchors.topMargin: 42
         anchors.right: parent.right
         anchors.rightMargin: (parent.width*0.05)
         width: 120;
         height: 100;    // TODO change icon
-        onClicked: {
+        onPressed: {
             controlHandler.lightsClicked();
         }
         background: Image {

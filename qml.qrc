@@ -25,5 +25,9 @@
         <file>icons/projectoron.png</file>
         <file>icons/Arrow/arrow_animation.gif</file>
         <file>icons/Arrow/arrow1.png</file>
+        <file>icons/Arrow/arrow_animation_pressed.gif</file>
+        <file>icons/Arrow/arrow_animation_released.gif</file>
+        <file>icons/Arrow/arrow_animation_20.png</file>
+        <file>ArrowButton.qml</file>
     </qresource>
 </RCC>

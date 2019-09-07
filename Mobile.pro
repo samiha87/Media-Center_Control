@@ -14,6 +14,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         controlpagehandler.cpp \
+        core.cpp \
+        displaylogic.cpp \
         main.cpp \
         objecthandler.cpp \
         playerpagehandler.cpp
@@ -33,5 +35,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     controlpagehandler.h \
+    core.h \
+    devicelogic.h \
+    displaylogic.h \
     objecthandler.h \
     playerpagehandler.h

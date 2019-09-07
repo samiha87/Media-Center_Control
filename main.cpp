@@ -4,19 +4,19 @@
 #include <QScreen>
 #include <QDebug>
 // Project includes
-#include "controlpagehandler.h"
-#include "playerpagehandler.h"
+#include "core.h"
 
 int main(int argc, char *argv[])
 {
     // Load classes
-    ControlPageHandler controlPage;
-    PlayerPageHandler playerPage;
+    Core core;
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
+    // C++, QML integration
+    core.initialize();
     const QUrl url(QStringLiteral("qrc:/main.qml"));
     // Update screen size
     QRect rect= app.primaryScreen()->geometry();
@@ -27,8 +27,7 @@ int main(int argc, char *argv[])
     // Ensure main screen size matches phone
     engine.rootObjects().at(0)->setProperty("dashboardWidth", rect.width());
     engine.rootObjects().at(0)->setProperty("dashboardHeigh", rect.height());
-    // C++, QML integration
-    qmlRegisterType<ControlPageHandler>("com.pages.control", 1, 0, "ControlHandler");
-    qmlRegisterType<PlayerPageHandler>("com.pages.player", 1, 0, "PlayerHandler");
+
+
     return app.exec();
 }

@@ -5,20 +5,23 @@ import com.pages.control 1.0
 Page {
     width: 600
     height: 400
+    ControlHandler {
+        id: controlHandler
+    }
 
     Button {
-       id: displayButton
-       anchors.top: parent.top
-       anchors.topMargin: 60
-       anchors.horizontalCenter: parent.horizontalCenter
-       width: 120
-       height: 120
-       onClicked: {
-
-       }
-       background: Image {
-            source: ControlHandler.imageSource ? "qrc:/icons/projectoroff.png" : ControlHandler.imageSource;
-       }
+        id: displayButton
+        anchors.top: parent.top
+        anchors.topMargin: 60
+        anchors.horizontalCenter: parent.horizontalCenter
+        width: 120
+        height: 120
+        onClicked: {
+            controlHandler.displayClicked();
+        }
+        background: Image {
+            source: controlHandler.getDisplayImage ? controlHandler.getDisplayImage :"qrc:/icons/projectoroff.png";
+        }
     }
 
     Button {
@@ -30,11 +33,11 @@ Page {
         width: 120;
         height: 120;
         onClicked: {
-
+            controlHandler.musicClicked();
         }
 
         background: Image {
-             source: "qrc:/icons/musicoff.png"
+             source: controlHandler.getMusicImage ? controlHandler.getMusicImage :"qrc:/icons/musicoff.png";
         }
     }
 
@@ -47,10 +50,10 @@ Page {
         width: 120;
         height: 100;    // TODO change icon
         onClicked: {
-
+            controlHandler.lightsClicked();
         }
         background: Image {
-             source: "qrc:/icons/lightbulboff.png"
+             source: controlHandler.getLightImage ? controlHandler.getLightImage :"qrc:/icons/lightbulboff.png";
         }
     }
 

@@ -1,0 +1,27 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Tab1.qml</file>
+        <file>Tab2.qml</file>
+        <file>main.qml</file>
+        <file>qtquickcontrols2.conf</file>
+        <file>icons/arrowactivedown.png</file>
+        <file>icons/arrowactiveup.png</file>
+        <file>icons/arrowdown.png</file>
+        <file>icons/arrowup.png</file>
+        <file>icons/ic_launcher_background.xml</file>
+        <file>icons/lightbulboff.png</file>
+        <file>icons/lightbulbon.png</file>
+        <file>icons/musicoff.png</file>
+        <file>icons/musicon.png</file>
+        <file>icons/musiconvol0.png</file>
+        <file>icons/musiconvol1.png</file>
+        <file>icons/musiconvol2.png</file>
+        <file>icons/musiconvol3.png</file>
+        <file>icons/musiconvol4.png</file>
+        <file>icons/musiconvol5.png</file>
+        <file>icons/mute.png</file>
+        <file>icons/projectoroff.png</file>
+        <file>icons/projectoron.png</file>
+    </qresource>
+</RCC>

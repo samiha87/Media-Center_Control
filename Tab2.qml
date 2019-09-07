@@ -40,7 +40,7 @@ Page {
     ArrowButton {
         id: volumeDownButton
         anchors.top: speakerButton.bottom
-        anchors.topMargin: 25
+        anchors.topMargin: 5
         anchors.left: parent.left
         anchors.leftMargin: 50
         rotation: 180
@@ -49,7 +49,7 @@ Page {
     ArrowButton {
         id: volumeUpButtown
         anchors.bottom: speakerButton.top
-        anchors.bottomMargin: 0
+        anchors.bottomMargin: 5
         anchors.left: parent.left
         anchors.leftMargin: 50
     }

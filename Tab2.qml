@@ -1,5 +1,5 @@
-import QtQuick 2.9
-import QtQuick.Controls 2.0
+import QtQuick 2.11
+import QtQuick.Controls 2.2
 import com.pages.control 1.0
 
 Page {
@@ -33,6 +33,76 @@ Page {
             // Width and height triples.
             width: parent.width
             height: parent.height
+        }
+    }
+
+    Button {
+        id: volumeUpButton
+
+    }
+
+    Button {
+        id: volumeDownButton
+        anchors.top: speakerButton.bottom
+        anchors.topMargin: 10
+        anchors.left: parent.left
+        anchors.leftMargin: 45
+        width: 50;
+        height: 50
+        background: Image {
+            id:volumeDownButtonImage
+            rotation: 180
+            anchors.fill: parent
+            source: "qrc:/icons/Arrow/arrow1.png"
+        }
+
+        onPressed: {
+            volumeDownButtonAnimation.visible = true
+            volumeDownButtonAnimation.playing = true
+            volumeDownButtonImage.visible = false;
+        }
+        onReleased: {
+
+        }
+
+        AnimatedImage {
+            playing: false
+            visible: false
+            id:volumeDownButtonAnimationPressed
+            rotation: 180
+            width: parent.width
+            height: parent.height
+            source: "qrc:/icons/Arrow/arrow_animation_pressed.gif"
+            speed: 10.0
+            onFrameChanged:{
+               console.log(currentFrame)
+               if(currentFrame == 15) {
+                   volumeDownButtonAnimation.visible = false
+                   volumeDownButtonAnimation.playing = false
+                   volumeDownButtonImage.visible = true
+               }
+
+            }
+        }
+
+        AnimatedImage {
+            playing: false
+            visible: false
+            id:volumeDownButtonAnimationReleased
+            rotation: 180
+            width: parent.width
+            height: parent.height
+            source: "qrc:/icons/Arrow/arrow_animation_released.gif"
+            speed: 10.0
+            onFrameChanged:{
+               console.log(currentFrame)
+               if(currentFrame == 15) {
+                   volumeDownButtonAnimation.visible = false
+                   volumeDownButtonAnimation.playing = false
+                   volumeDownButtonImage.visible = true
+               }
+
+            }
         }
     }
 

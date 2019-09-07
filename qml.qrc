@@ -23,5 +23,7 @@
         <file>icons/mute.png</file>
         <file>icons/projectoroff.png</file>
         <file>icons/projectoron.png</file>
+        <file>icons/Arrow/arrow_animation.gif</file>
+        <file>icons/Arrow/arrow1.png</file>
     </qresource>
 </RCC>

@@ -7,6 +7,12 @@ Page {
     height: 400
     ControlHandler {
         id: controlHandler
+        onStatusChanged: {
+            console.log("QML, Tab2::ControlHandler() Status changed")
+            displayButtonImage.source = getDisplaySource()
+            musicButtonImage.source = getAudioSource()
+            lightsButtonImage.source = getLightsSource()
+        }
     }
 
     Button {
@@ -20,7 +26,13 @@ Page {
             controlHandler.displayClicked();
         }
         background: Image {
-            source: controlHandler.getDisplayImage ? controlHandler.getDisplayImage :"qrc:/icons/projectoroff.png";
+            id: displayButtonImage
+            source: controlHandler.getDisplaySource() ? controlHandler.getDisplaySource() :"qrc:/icons/projectoroff.png";
+            fillMode: Image.Stretch
+            // Width and height has to be declared. Otherwise when source updated from control handler
+            // Width and height triples.
+            width: parent.width
+            height: parent.height
         }
     }
 
@@ -33,11 +45,16 @@ Page {
         width: 120;
         height: 120;
         onClicked: {
-            controlHandler.musicClicked();
+            controlHandler.audioClicked();
         }
 
         background: Image {
-             source: controlHandler.getMusicImage ? controlHandler.getMusicImage :"qrc:/icons/musicoff.png";
+            id: musicButtonImage
+             source: controlHandler.getAudioImage ? controlHandler.getAudioImage :"qrc:/icons/musicoff.png";
+             // Width and height has to be declared. Otherwise when source updated from control handler
+             // Width and height triples.
+             width: parent.width
+             height: parent.height
         }
     }
 
@@ -53,7 +70,12 @@ Page {
             controlHandler.lightsClicked();
         }
         background: Image {
-             source: controlHandler.getLightImage ? controlHandler.getLightImage :"qrc:/icons/lightbulboff.png";
+            id: lightsButtonImage
+            source: controlHandler.getLightImage ? controlHandler.getLightImage :"qrc:/icons/lightbulboff.png";
+            // Width and height has to be declared. Otherwise when source updated from control handler
+            // Width and height triples.
+            width: parent.width
+            height: parent.height
         }
     }
 

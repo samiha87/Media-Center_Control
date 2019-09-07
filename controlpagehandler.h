@@ -2,9 +2,12 @@
 #define CONTROLPAGEHANDLER_H
 // Qt Includes
 #include <QObject>
+#include <QVariant>
 // Project includes
 #include "objecthandler.h"
 #include "displaylogic.h"
+#include "audiologic.h"
+#include "lightslogic.h"
 
 class ControlPageHandler : public ObjectHandler
 {
@@ -19,9 +22,9 @@ public:
     QString getDisplayImage();
 
     // Set music image source
-    void setMusicImage(QString src);
+    void setAudioImage(QString src);
     // Return music image source
-    QString getMusicImage();
+    QString getAudioImage();
 
     // Set Llght image source
     void setLightImage(QString src);
@@ -29,20 +32,39 @@ public:
     QString getLightImage();
 
     Q_INVOKABLE void displayClicked();
-    Q_INVOKABLE void musicClicked();
+    Q_INVOKABLE void audioClicked();
     Q_INVOKABLE void lightsClicked();
 signals:
+    // Emitting this signal tells QML element to update image properties
+    void statusChanged();
 
 public slots:
+    // When device status changed one of the following need to be called
+    // Updates display properties on QML element
+    void displayStatusChanged();
+    // Updates music properties on QML element
+    void audioStatusChanged();
+    // Updates lights properties on QML element
+    void lightsStatusChanged();
+    // Return display image source
+    QVariant getDisplaySource();
+    // Return display image source
+    QVariant getAudioSource();
+    // Return display image source
+    QVariant getLightsSource();
 
 private:
     QString displayImageSource;
-    QString musicImageSource;
+    QString audioImageSource;
     QString lightImageSource;
 
     DisplayLogic displayLogic;
+    AudioLogic   audioLogic;
+    LightsLogic  lightsLogic;
 
     QString getIconPath(QString iconName);
+
+
 };
 
 #endif // CONTROLPAGEHANDLER_H

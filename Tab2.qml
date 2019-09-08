@@ -22,7 +22,7 @@ Page {
         anchors.horizontalCenter: parent.horizontalCenter
         width: 120
         height: 120
-        onPressed: {
+        onClicked: {
             controlHandler.displayClicked();
         }
         background: Image {
@@ -42,7 +42,7 @@ Page {
         anchors.top: speakerButton.bottom
         anchors.topMargin: 5
         anchors.left: parent.left
-        anchors.leftMargin: 50
+        anchors.leftMargin: 45
         rotation: 180
         onPressed: {
             controlHandler.volumeDownClicked();
@@ -52,9 +52,9 @@ Page {
     ArrowButton {
         id: volumeUpButtown
         anchors.bottom: speakerButton.top
-        anchors.bottomMargin: 0
+        anchors.bottomMargin: 5
         anchors.left: parent.left
-        anchors.leftMargin: 50
+        anchors.leftMargin: 45
         onPressed: {
             controlHandler.volumeUpClicked();
         }
@@ -63,12 +63,12 @@ Page {
     Button {
         id: speakerButton
         anchors.top: displayButton.bottom
-        anchors.topMargin: 30
+        anchors.topMargin: 50
         anchors.left: parent.left
         anchors.leftMargin: 20
-        width: 120;
-        height: 120;
-        onPressed: {
+        width: 100;
+        height: 100;
+        onClicked: {
             controlHandler.audioClicked();
         }
 
@@ -85,12 +85,12 @@ Page {
     Button {
         id: lightsButton
         anchors.top: displayButton.bottom
-        anchors.topMargin: 42
+        anchors.topMargin: 44
         anchors.right: parent.right
-        anchors.rightMargin: (parent.width*0.05)
-        width: 120;
+        anchors.rightMargin: 30
+        width: 100;
         height: 100;    // TODO change icon
-        onPressed: {
+        onClicked: {
             controlHandler.lightsClicked();
         }
         background: Image {

@@ -4,7 +4,7 @@
 ControlPageHandler::ControlPageHandler(QObject *parent) : ObjectHandler(parent)
 {
     displayImageSource = getIconPath("projectoroff");
-    audioImageSource = getIconPath("musicoff");
+    audioImageSource = getIconPath("speakeroff");
     lightImageSource = getIconPath("lightbulboff");
     // Connect signals and slots
     QObject::connect(&displayLogic, SIGNAL(statusChanged()), this, SLOT(displayStatusChanged()));
@@ -72,7 +72,7 @@ void ControlPageHandler::audioStatusChanged() {
     qDebug() << "ControlPageHandler::dispalyStatusChanged()";
     // Check power state
     if(audioLogic.getPower()) setAudioImage("musicon");
-    else setAudioImage("musicoff");
+    else setAudioImage("speakeroff");
     // Tell QML element to update
     emit statusChanged();
 }

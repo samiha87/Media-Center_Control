@@ -44,3 +44,6 @@ HEADERS += \
     lightslogic.h \
     objecthandler.h \
     playerpagehandler.h
+
+DISTFILES += \
+    icons/speakeroff.svg

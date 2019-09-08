@@ -44,14 +44,20 @@ Page {
         anchors.left: parent.left
         anchors.leftMargin: 50
         rotation: 180
+        onPressed: {
+            controlHandler.volumeDownClicked();
+        }
     }
 
     ArrowButton {
         id: volumeUpButtown
         anchors.bottom: speakerButton.top
-        anchors.bottomMargin: 5
+        anchors.bottomMargin: 0
         anchors.left: parent.left
         anchors.leftMargin: 50
+        onPressed: {
+            controlHandler.volumeUpClicked();
+        }
     }
 
     Button {
@@ -59,7 +65,7 @@ Page {
         anchors.top: displayButton.bottom
         anchors.topMargin: 30
         anchors.left: parent.left
-        anchors.leftMargin: (parent.width*0.05)
+        anchors.leftMargin: 20
         width: 120;
         height: 120;
         onPressed: {
@@ -68,7 +74,7 @@ Page {
 
         background: Image {
             id: musicButtonImage
-             source: controlHandler.getAudioImage ? controlHandler.getAudioImage :"qrc:/icons/musicoff.png";
+             source: controlHandler.getAudioImage ? controlHandler.getAudioImage :"qrc:/icons/speakeroff.png";
              // Width and height has to be declared. Otherwise when source updated from control handler
              // Width and height triples.
              width: parent.width

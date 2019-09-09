@@ -47,7 +47,7 @@ QString ControlPageHandler::getIconPath(QString iconName) {
 
 void ControlPageHandler::displayClicked() {
     QString data = "Proj,Pwr,On";
-    emit commandMessage(data);
+   // emit commandMessage(data);
     qDebug() << "ControlPageHandler::displayClicked()";
     displayLogic.onClicked();
 }

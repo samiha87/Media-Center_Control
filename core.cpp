@@ -33,7 +33,7 @@ void Core::initIcons() {
     // Display properties
     controlPage->setDisplayImage("projectoroff");
     // Music properties
-    controlPage->setAudioImage("musicoff");
+    controlPage->setAudioImage("speakeroff");
     // Light properties
     controlPage->setLightImage("lightsoff");
 }

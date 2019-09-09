@@ -9,6 +9,7 @@ Page {
         id: controlHandler
         onStatusChanged: {
             console.log("QML, Tab2::ControlHandler() Status changed")
+            console.log("QML, Tab2::ControlHandler()" + getDisplaySource())
             displayButtonImage.source = getDisplaySource()
             musicButtonImage.source = getAudioSource()
             lightsButtonImage.source = getLightsSource()

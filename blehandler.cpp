@@ -200,6 +200,14 @@ void BLEHandler::serialDescriptorWrite(const QLowEnergyDescriptor &d,
                                          const QByteArray &value)
 {
     // Disconnect from device
+    if(transmitService == nullptr) {
+        qDebug() << "BLEHandler::serialDescriptorWrite() transmit service doesn't exist";
+        return;
+    }
+    if(transmitService->characteristics().count() < transmitPointer) {
+        qDebug() << "BLEHandler::serialDescriptorWrite() Transmit pointer is higher than characteristic count";
+        return;
+    }
     const QLowEnergyCharacteristic hrChar = transmitService->characteristics().at(transmitPointer);
 
     if (!hrChar.isValid()) {

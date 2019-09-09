@@ -1,4 +1,5 @@
-QT += quick
+QT += quick bluetooth network
+QT += androidextras
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -14,13 +15,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         audiologic.cpp \
+        blehandler.cpp \
         controlpagehandler.cpp \
         core.cpp \
         displaylogic.cpp \
         lightslogic.cpp \
         main.cpp \
         objecthandler.cpp \
-        playerpagehandler.cpp
+        playerpagehandler.cpp \
+        deviceinfo.cpp \
+        characteristicinfo.cpp \
+        serviceinfo.cpp
 
 RESOURCES += qml.qrc
 
@@ -37,13 +42,29 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     audiologic.h \
+    blehandler.h \
     controlpagehandler.h \
     core.h \
     devicelogic.h \
     displaylogic.h \
     lightslogic.h \
     objecthandler.h \
-    playerpagehandler.h
+    playerpagehandler.h \
+    deviceinfo.h \
+    characteristicinfo.h \
+    serviceinfo.h
 
 DISTFILES += \
+    android/AndroidManifest.xml \
+    android/build.gradle \
+    android/gradle/wrapper/gradle-wrapper.jar \
+    android/gradle/wrapper/gradle-wrapper.properties \
+    android/gradlew \
+    android/gradlew.bat \
+    android/res/values/libs.xml \
     icons/speakeroff.svg
+
+contains(ANDROID_TARGET_ARCH,armeabi-v7a) {
+    ANDROID_PACKAGE_SOURCE_DIR = \
+        $$PWD/android
+}

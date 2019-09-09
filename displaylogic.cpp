@@ -19,6 +19,8 @@ void DisplayLogic::onClicked() {
 
 void DisplayLogic::setPower(bool state) {
     powerState = state;
+    if(powerState) emit cmdMessage("PWR:ON");
+    else emit cmdMessage("PWR:OFF");
     emit statusChanged();
 }
 

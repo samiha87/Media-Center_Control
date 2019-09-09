@@ -22,6 +22,7 @@ public:
 
 signals:
     void statusChanged();
+    void cmdMessage(QString);
 public slots:
 private:
     bool powerState;

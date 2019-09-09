@@ -213,6 +213,7 @@ void BLEHandler::serialDescriptorWrite(const QLowEnergyDescriptor &d,
         controller->disconnectFromDevice();
         if(transmitService != nullptr) {
             delete transmitService;
+            transmitService = nullptr;
             transmitPointer = 0;
         }
     }
@@ -237,14 +238,10 @@ void BLEHandler::deviceScanError(QBluetoothDeviceDiscoveryAgent::Error error)
 
 void BLEHandler::transmitData(QString cmd)
 {
-    qDebug() << "Device::transmitData() " << cmd;
-    if(transmitService == nullptr) {
+    qDebug() << "Device::transmitData() ";
+   /* if(transmitService == nullptr) {
         qDebug() << "transmitService not found";
         return;
-    }
-    QByteArray msg;
-    msg.append('#');    // Start byte
-    msg.append('*');    // End byte
-    transmitService->writeCharacteristic(transmitService->characteristics().at(transmitPointer), msg, QLowEnergyService::WriteWithoutResponse);
-    qDebug() << "Device::transmitData() " + msg;
+    }*/
+    //transmitService->writeCharacteristic(transmitService->characteristics().at(transmitPointer), msg, QLowEnergyService::WriteWithoutResponse);
 }

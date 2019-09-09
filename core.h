@@ -5,6 +5,8 @@
 // Project includes
 #include "controlpagehandler.h"
 #include "playerpagehandler.h"
+#include "blehandler.h"
+
 class Core : public QObject
 {
     Q_OBJECT
@@ -14,12 +16,14 @@ public:
     void initialize();
 signals:
 
-public slots:
 private:
     ControlPageHandler *controlPage;
     PlayerPageHandler *playerPage;
+    BLEHandler *bleHandler;
 
     void initIcons();
+    void checkPermissions();
+
 };
 
 #endif // CORE_H

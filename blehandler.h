@@ -32,6 +32,7 @@ signals:
 public slots:
     void transmitData(QString cmd);
     void connectToService();
+
 private:
     QLowEnergyService *transmitService;
     QBluetoothDeviceDiscoveryAgent *discoveryAgent;

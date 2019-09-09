@@ -56,7 +56,7 @@ Page {
         anchors.left: parent.left
         anchors.leftMargin: 45
         onPressed: {
-            controlHandler.volumeUpClicked();
+            //controlHandler.volumeUpClicked();
         }
     }
 

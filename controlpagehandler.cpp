@@ -10,6 +10,7 @@ ControlPageHandler::ControlPageHandler(QObject *parent) : ObjectHandler(parent)
     QObject::connect(&displayLogic, SIGNAL(statusChanged()), this, SLOT(displayStatusChanged()));
     QObject::connect(&audioLogic, SIGNAL(statusChanged()), this, SLOT(audioStatusChanged()));
     QObject::connect(&lightsLogic, SIGNAL(statusChanged()), this, SLOT(lightsStatusChanged()));
+    connect(&displayLogic, SIGNAL(cmdMessage(QString)), this, SLOT(handleCommunication(QString)));
 }
 
 void ControlPageHandler::setDisplayImage(QString src) {
@@ -45,6 +46,8 @@ QString ControlPageHandler::getIconPath(QString iconName) {
 }
 
 void ControlPageHandler::displayClicked() {
+    QString data = "Proj,Pwr,On";
+    emit commandMessage(data);
     qDebug() << "ControlPageHandler::displayClicked()";
     displayLogic.onClicked();
 }
@@ -55,6 +58,19 @@ void ControlPageHandler::audioClicked() {
 void ControlPageHandler::lightsClicked(){
     qDebug() << "ControlPageHandler::lightsClicked()";
     lightsLogic.onClicked();
+}
+
+void ControlPageHandler::setCommunication(QObject *com) {
+// TODO fix later, should be able to load different communication methods. Maybe as a list to allow different communication methods?
+   qDebug() << "ControlPageHandler::setCommunication() for BLE";
+   commHandler = com;
+   // If ble
+   connect(&displayLogic, SIGNAL(cmdMessage(QString)), qobject_cast<BLEHandler *>(commHandler), SLOT(transmitData(QString)));
+};
+// TODO move this somewhere else, this should not exist on page handler
+void ControlPageHandler::handleCommunication(QString msg) {
+    qDebug() << "ControlPageHandler::handleCommunication() " << msg;
+    qobject_cast<BLEHandler *>(commHandler)->transmitData(msg);
 }
 
 // Slots

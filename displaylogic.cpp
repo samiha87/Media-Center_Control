@@ -5,7 +5,7 @@
 
 DisplayLogic::DisplayLogic(QObject *parent) : QObject(parent)
 {
-
+    lampHours = 0;
 }
 
 DisplayLogic::~DisplayLogic() {
@@ -31,5 +31,31 @@ void DisplayLogic::setPower(bool state) {
 
 bool DisplayLogic::getPower() {
     return powerState;
+}
+
+// Parse messag from Media Center and update status
+bool DisplayLogic::parseMessage(QByteArray msg) {
+    // No display related message received
+    bool change = false;
+    if(!msg.contains("Proj") && !msg.contains("TV")) return false;
+    if(msg.contains("Pwr,1") && !powerState) {
+        powerState = true;
+        qDebug() << "DisplayLogic::parseMessage() Power on ";
+        change = true;
+    }
+    if(msg.contains("Pwr,0") && powerState) {
+        qDebug() << "DisplayLogic::parseMessage() Power off ";
+        powerState = false;
+        change = true;
+    }
+    if(msg.contains("Lamp") || msg.contains("lamp")) {
+        int index = msg.indexOf("lamp");
+        index = index + 5;
+        msg.remove(0, index);
+        lampHours = msg.toInt();
+        change = true;
+        qDebug() << "DisplayLogic::parseMessage() Lamp " << QString::number(lampHours);
+    }
+    return change;
 }
 

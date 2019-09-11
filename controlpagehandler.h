@@ -75,7 +75,7 @@ private:
     QString getIconPath(QString iconName);
 private slots:
     void connectionStatus(QString msg);
-    void messageReceived(QString msg);
+    void messageReceived(QByteArray msg);
 
 
 };

@@ -19,6 +19,8 @@ public:
     bool getPower() override;
     // Set power for current device
     void setPower(bool state) override;
+    // Parse messag from Media Center and update status
+    bool parseMessage(QByteArray msg);
 
 signals:
     void statusChanged();
@@ -26,6 +28,7 @@ signals:
 public slots:
 private:
     bool powerState;
+    int lampHours;
 };
 
 #endif // DISPLAYLOGIC_H

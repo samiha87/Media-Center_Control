@@ -171,6 +171,7 @@ private:
     QString searchParams;
 
     bool deviceVisuallyConnected;
+
 };
 
 #endif // DEVICE_H

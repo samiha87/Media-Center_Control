@@ -13,6 +13,8 @@ public:
     void onClicked() override;
     void setPower(bool state) override;
     bool getPower() override;
+    // Parse messag from Media Center and update status
+    bool parseMessage(QByteArray msg);
 
 signals:
    void statusChanged();
@@ -20,6 +22,7 @@ signals:
 public slots:
 private:
    bool powerState;
+   bool audioMute;
 };
 
 #endif // AUDIOCLASS_H

@@ -16,7 +16,7 @@ ControlPageHandler::ControlPageHandler(QObject *parent) : ObjectHandler(parent)
 
     connect(&displayLogic, SIGNAL(cmdMessage(QString)), bleHandler, SLOT(transmitData(QString)));
     connect(bleHandler, SIGNAL(updateStatus(QString)), this, SLOT(connectionStatus(QString)));
-    connect(bleHandler, SIGNAL(messageReceived(QString)), this, SLOT(messageReceived(QString)));
+    connect(bleHandler, SIGNAL(messageReceived(QByteArray)), this, SLOT(messageReceived(QByteArray)));
     // Needsto becalled after connections are made
     bleHandler->startDeviceDiscovery();
 }
@@ -139,6 +139,18 @@ QVariant ControlPageHandler::getStatusText() {
     return statusMessage;
 }
 
-void ControlPageHandler::messageReceived(QString msg) {
+void ControlPageHandler::messageReceived(QByteArray msg) {
     qDebug() << "ControlPageHandler::messageReceived() "<< msg;
+    // Parse message
+    bool change = false;
+    if(msg.contains("Proj") || msg.contains("TV")) {
+        change = displayLogic.parseMessage(msg);
+    }
+    if(msg.contains("Audio")) {
+       change = displayLogic.parseMessage(msg);
+    }
+    if(msg.contains("Lights")) {
+        change = displayLogic.parseMessage(msg);
+    }
+    if(change) emit statusChanged();
 }

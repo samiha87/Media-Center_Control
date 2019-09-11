@@ -17,3 +17,8 @@ void LightsLogic::setPower(bool state) {
 bool LightsLogic::getPower() {
     return powerState;
 }
+
+bool LightsLogic::parseMessage(QByteArray msg) {
+    bool change = false;
+    return change;
+}

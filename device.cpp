@@ -466,8 +466,7 @@ void Device::setDeviceVisuallyConnected(bool state)
     deviceVisuallyConnected = state;
 }
 
-void Device::serialReadValue(const QLowEnergyCharacteristic &c,
-                                     const QByteArray &value)
+void Device::serialReadValue(const QLowEnergyCharacteristic &c, const QByteArray &value)
 {
     // ignore any other characteristic change -> shouldn't really happen though
     //qDebug() << "Device::Serial read value: " << value;
@@ -481,11 +480,13 @@ void Device::serialReadValue(const QLowEnergyCharacteristic &c,
         rxMessage.clear();
         QByteArray temp;
         temp = value;
+        // find index of start byte and add 1 to remove it
         int start = temp.indexOf(startByte) + 1;
         int end = temp.indexOf(endByte);
-        temp = temp.mid( (start + 1), (end ));
+        // Remove start and end byte
+        temp = temp.mid( (start), (end - 1 ));
         rxMessage.append(temp);
-        qDebug() << "Device::serialReadValue, whole message in bytes: " << rxMessage;
+       // qDebug() << "Device::serialReadValue, whole message in bytes: " << rxMessage;
         emit messageReceived(rxMessage);
         setDeviceVisuallyConnected(true);
         return;
@@ -493,8 +494,9 @@ void Device::serialReadValue(const QLowEnergyCharacteristic &c,
         rxMessage.clear();
         QByteArray temp;
         temp = value;
+        // find index of start byte and add 1 to remove it
         int start = temp.indexOf(startByte) + 1;
-        temp.remove(0, (start + 1) );
+        temp.remove(0, start);
         rxMessage.append(temp);
         enableMessageReading = true;
     } else if(enableMessageReading && value.contains(endByte)) {
@@ -506,14 +508,13 @@ void Device::serialReadValue(const QLowEnergyCharacteristic &c,
         rxMessage.append(temp);
         emit messageReceived(rxMessage);
         setDeviceVisuallyConnected(true);
-        qDebug() << "Device::serialReadValue, Message in bytes: " << rxMessage;
+       // qDebug() << "Device::serialReadValue, Message in bytes: " << rxMessage;
     } else if(enableMessageReading){
         rxMessage.append(value);
     }
 }
 
-void Device::serialDescriptorWrite(const QLowEnergyDescriptor &d,
-                                         const QByteArray &value)
+void Device::serialDescriptorWrite(const QLowEnergyDescriptor &d, const QByteArray &value)
 {
     // Disconnect from device
     const QLowEnergyCharacteristic hrChar = transmitService->characteristics().at(transmitPointer);
@@ -545,5 +546,5 @@ void Device::transmitData(QString cmd)
     msg.append(cmd.toLocal8Bit());  //
     msg.append('*');    // End byte
     transmitService->writeCharacteristic(transmitService->characteristics().at(transmitPointer), msg, QLowEnergyService::WriteWithoutResponse);
-    qDebug() << "Device::transmitData() " + msg;
+    //qDebug() << "Device::transmitData() " + msg;
 }

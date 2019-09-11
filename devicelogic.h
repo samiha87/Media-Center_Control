@@ -10,6 +10,7 @@ public:
     virtual void setPower(bool state) = 0;
 private:
 
+
 };
 
 #endif // DEVICELOGIC_H

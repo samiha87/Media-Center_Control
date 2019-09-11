@@ -20,7 +20,6 @@
         <file>icons/musiconvol3.png</file>
         <file>icons/musiconvol4.png</file>
         <file>icons/musiconvol5.png</file>
-        <file>icons/mute.png</file>
         <file>icons/projectoroff.png</file>
         <file>icons/projectoron.png</file>
         <file>icons/Arrow/arrow_animation.gif</file>
@@ -30,5 +29,6 @@
         <file>icons/Arrow/arrow_animation_20.png</file>
         <file>ArrowButton.qml</file>
         <file>icons/speakeroff.png</file>
+        <file>icons/speakermute.png</file>
     </qresource>
 </RCC>

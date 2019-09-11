@@ -52,15 +52,11 @@
 #include "device.h"
 
 
-Device::Device():
-    connected(false), controller(nullptr), m_deviceScanState(false), randomAddress(false)
-{
-    //! [les-devicediscovery-1]
+Device::Device():connected(false), controller(nullptr), m_deviceScanState(false), randomAddress(false) {
     discoveryAgent = new QBluetoothDeviceDiscoveryAgent();
     connect(discoveryAgent, SIGNAL(deviceDiscovered(const QBluetoothDeviceInfo&)), this, SLOT(addDevice(const QBluetoothDeviceInfo&)));
     connect(discoveryAgent, SIGNAL(error(QBluetoothDeviceDiscoveryAgent::Error)), this, SLOT(deviceScanError(QBluetoothDeviceDiscoveryAgent::Error)));
     connect(discoveryAgent, SIGNAL(finished()), this, SLOT(deviceScanFinished()));
-    //! [les-devicediscovery-1]
 
     connect(&quickSearchTimer, SIGNAL(timeout()),this, SLOT(deviceScanFinished()));
     tx = nullptr;
@@ -84,8 +80,7 @@ Device::~Device()
 
 void Device::startDeviceDiscovery()
 {
-    qDebug() << "Device::startDeviceDiscovery()";
-    updateStatus("Connecting to bluetooth");
+    updateStatus("Connecting bluetooth");
     qDeleteAll(devices);
     qDeleteAll(m_services);
     qDeleteAll(m_characteristics);
@@ -133,7 +128,9 @@ void Device::deviceScanFinished()
     discoveryAgent->stop();
     emit qstateChanged();
     // Start connecting to device
+    if(devices.count() == 0) return;
     DeviceInfo *d = qobject_cast<DeviceInfo *>(devices.first());
+
     scanServices(d->getAddress());
 }
 
@@ -162,8 +159,8 @@ void Device::scanServices(const QString &address)
     // We need the current device for service discovery.
     qDebug() << "Device::scanServices(): begin";
     for (int i = 0; i < devices.size(); i++) {
-        if (((DeviceInfo*)devices.at(i))->getAddress() == address )
-            currentDevice.setDevice(((DeviceInfo*)devices.at(i))->getDevice());
+        if ((qobject_cast<DeviceInfo*>(devices.at(i)))->getAddress() == address )
+            currentDevice.setDevice((qobject_cast<DeviceInfo*>(devices.at(i)))->getDevice());
     }
 
     if (!currentDevice.getDevice().isValid()) {
@@ -238,31 +235,28 @@ void Device::addLowEnergyService(const QBluetoothUuid &serviceUuid)
 void Device::serviceScanDone()
 {
     // force UI in case we didn't find anything
-    if (m_services.isEmpty())
-        emit servicesUpdated();
+    if (m_services.isEmpty()) emit servicesUpdated();
 }
 
 void Device::connectToService(const QString &uuid)
 {
     QLowEnergyService *service = nullptr;
     for (int i = 0; i < m_services.size(); i++) {
-        ServiceInfo *serviceInfo = (ServiceInfo*)m_services.at(i);
+        ServiceInfo *serviceInfo = qobject_cast<ServiceInfo*>(m_services.at(i));
         if (serviceInfo->getUuid() == uuid) {
             service = serviceInfo->service();
             break;
         }
     }
 
-    if (!service)
-        return;
+    if (!service) return;
 
     qDeleteAll(m_characteristics);
     m_characteristics.clear();
     emit characteristicsUpdated();
 
     if (service->state() == QLowEnergyService::DiscoveryRequired) {
-        connect(service, SIGNAL(stateChanged(QLowEnergyService::ServiceState)),
-                this, SLOT(serviceDetailsDiscovered(QLowEnergyService::ServiceState)));
+        connect(service, SIGNAL(stateChanged(QLowEnergyService::ServiceState)), this, SLOT(serviceDetailsDiscovered(QLowEnergyService::ServiceState)));
         service->discoverDetails();
         return;
     }
@@ -274,7 +268,6 @@ void Device::connectToService(const QString &uuid)
         m_characteristics.append(cInfo);
     }
     setUpdate("Bluetooth connected");
-
     QTimer::singleShot(0, this, SIGNAL(characteristicsUpdated()));
 }
 
@@ -308,8 +301,7 @@ void Device::disconnectFromDevice()
         controller->disconnectFromDevice();
         setDeviceVisuallyConnected(false);
 
-        disconnect(controller, SIGNAL(disconnected()),
-                             this, SLOT(deviceDisconnected()));
+        disconnect(controller, SIGNAL(disconnected()), this, SLOT(deviceDisconnected()));
     } else
         deviceDisconnected();
 }
@@ -327,13 +319,8 @@ void Device::deviceDisconnected()
 void Device::serviceDetailsDiscovered(QLowEnergyService::ServiceState newState)
 {
     if (newState != QLowEnergyService::ServiceDiscovered) {
-        // do not hang in "Scanning for characteristics" mode forever
-        // in case the service discovery failed
-        // We have to queue the signal up to give UI time to even enter
-        // the above mode
         if (newState != QLowEnergyService::DiscoveringServices) {
-            QMetaObject::invokeMethod(this, "characteristicsUpdated",
-                                      Qt::QueuedConnection);
+            QMetaObject::invokeMethod(this, "characteristicsUpdated", Qt::QueuedConnection);
         }
         return;
     }
@@ -346,10 +333,8 @@ void Device::serviceDetailsDiscovered(QLowEnergyService::ServiceState newState)
     foreach (const QLowEnergyCharacteristic &ch, chars) {
         CharacteristicInfo *cInfo = new CharacteristicInfo(ch);
         m_characteristics.append(cInfo);
-        // Check
-
         for(int i = 0; i < service->characteristics().count(); i++) {
-            qDebug() << service->serviceUuid();
+            //qDebug() << service->serviceUuid();
             if(service->serviceUuid().toString().contains("0000ffe0") ) {
                 if(transmitService != nullptr) {
                     //delete transmitService;
@@ -378,7 +363,6 @@ void Device::serviceDetailsDiscovered(QLowEnergyService::ServiceState newState)
                 connect(transmitService, SIGNAL(stateChanged(QLowEnergyService::ServiceState)), this, SLOT(serialStateChanged(QLowEnergyService::ServiceState)));
                 connect(transmitService, SIGNAL(characteristicChanged(QLowEnergyCharacteristic, QByteArray)), this, SLOT(serialReadValue(QLowEnergyCharacteristic,QByteArray)));
                 connect(transmitService, SIGNAL(descriptorWritten(QLowEnergyDescriptor, QByteArray)), this, SLOT(serialDescriptorWrite(QLowEnergyDescriptor,QByteArray)));
-                qDebug() << "Transmit Service set";
                 setUpdate("Bluetooth connected");
             }
         }
@@ -519,9 +503,7 @@ void Device::serialDescriptorWrite(const QLowEnergyDescriptor &d, const QByteArr
     // Disconnect from device
     const QLowEnergyCharacteristic hrChar = transmitService->characteristics().at(transmitPointer);
 
-    if (!hrChar.isValid()) {
-        return;
-    }
+    if (!hrChar.isValid()) return;
 
     QLowEnergyDescriptor m_notificationDesc = hrChar.descriptor(QBluetoothUuid::ClientCharacteristicConfiguration);
 

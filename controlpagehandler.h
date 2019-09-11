@@ -59,7 +59,6 @@ public slots:
     QVariant getLightsSource();
     void handleCommunication(QString msg);
     QVariant getStatusText();
-
 private:
     QString displayImageSource;
     QString audioImageSource;
@@ -73,6 +72,7 @@ private:
     QString statusMessage;
 
     QString getIconPath(QString iconName);
+    void processUI();
 private slots:
     void connectionStatus(QString msg);
     void messageReceived(QByteArray msg);

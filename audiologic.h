@@ -15,6 +15,7 @@ public:
     bool getPower() override;
     // Parse messag from Media Center and update status
     bool parseMessage(QByteArray msg);
+    bool getMute();
 
 signals:
    void statusChanged();

@@ -58,6 +58,7 @@ void ControlPageHandler::displayClicked() {
    // emit commandMessage(data);
     qDebug() << "ControlPageHandler::displayClicked()";
     displayLogic.onClicked();
+    processUI();
 }
 void ControlPageHandler::audioClicked() {
     qDebug() << "ControlPageHandler::audioClicked()";
@@ -97,8 +98,10 @@ void ControlPageHandler::displayStatusChanged() {
 void ControlPageHandler::audioStatusChanged() {
     qDebug() << "ControlPageHandler::dispalyStatusChanged()";
     // Check power state
-    if(audioLogic.getPower()) setAudioImage("musicon");
-    else setAudioImage("speakeroff");
+    if(audioLogic.getPower()) {
+        if(!audioLogic.getMute()) setAudioImage("musicon");
+        else setAudioImage("speakermute");
+    }else setAudioImage("speakeroff");
     // Tell QML element to update
     emit statusChanged();
 }
@@ -134,7 +137,6 @@ void ControlPageHandler::connectionStatus(QString msg) {
     emit textChanged();
 }
 
-
 QVariant ControlPageHandler::getStatusText() {
     return statusMessage;
 }
@@ -143,14 +145,42 @@ void ControlPageHandler::messageReceived(QByteArray msg) {
     qDebug() << "ControlPageHandler::messageReceived() "<< msg;
     // Parse message
     bool change = false;
+
     if(msg.contains("Proj") || msg.contains("TV")) {
         change = displayLogic.parseMessage(msg);
     }
     if(msg.contains("Audio")) {
-       change = displayLogic.parseMessage(msg);
+       change = audioLogic.parseMessage(msg);
     }
     if(msg.contains("Lights")) {
-        change = displayLogic.parseMessage(msg);
+        change = lightsLogic.parseMessage(msg);
     }
-    if(change) emit statusChanged();
+    if(change) {
+        processUI();
+    }
+}
+
+void ControlPageHandler::processUI() {
+
+    // If display is off
+    if(!displayLogic.getPower()) {
+        // Depending on settings in media center instance if display not powered all choices are set off
+        // If receives message that doesn't match requested state will send command to shutdown or start depending on the current state of control
+        if(audioLogic.getPower()) {
+           audioLogic.setPower(false);
+        }
+
+        if(lightsLogic.getPower()) {
+            lightsLogic.setPower(false);
+        }
+        //Update UI
+
+        return;
+    }
+    // If display is on, we assume if projector is on audio will also start
+    if(displayLogic.getPower()) {
+        // If audio powe is on QML activates volume adjustment
+        if(!audioLogic.getPower()) audioLogic.setPower(true);
+    }
+    emit statusChanged();
 }

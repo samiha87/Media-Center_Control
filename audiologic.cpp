@@ -33,7 +33,6 @@ bool AudioLogic::parseMessage(QByteArray msg) {
             // Add to index Level=
             int start = msg.indexOf("Level") + 6;
             int end = msg.indexOf(",", start);
-
             QByteArray parsed = msg.mid(start, (end - start));
             qDebug() << "AudioLogic::parseMessage() " << parsed;
         }
@@ -41,13 +40,18 @@ bool AudioLogic::parseMessage(QByteArray msg) {
         if(msg.contains("Mute=On") && !audioMute) {
             audioMute = true;
             qDebug() << "AudioLogic::parseMessage() Audio mute on";
+            change = true;
         }
 
         if(msg.contains("Mute=Off") && audioMute) {
             audioMute = false;
             qDebug() << "AudioLogic::parseMessage() Audio mute off";
+            change = true;
         }
     }
-
     return change;
+}
+
+bool AudioLogic::getMute() {
+    return audioMute;
 }

@@ -36,8 +36,7 @@ void Core::initIcons() {
     controlPage->setLightImage("lightsoff");
 }
 
-void Core::checkPermissions()
-{/*
+void Core::checkPermissions() {
     auto result = QtAndroid::checkPermission(QString("android.permission.ACCESS_COARSE_LOCATION"));
     if(result == QtAndroid::PermissionResult::Denied){
         QtAndroid::PermissionResultMap resultHash = QtAndroid::requestPermissionsSync(QStringList({"android.permission.ACCESS_COARSE_LOCATION"}));
@@ -52,5 +51,5 @@ void Core::checkPermissions()
         if(resultHash["android.permission.ACCESS_FINE_LOCATION"] == QtAndroid::PermissionResult::Denied) {
             qDebug() << "Core::checkPermissions() Access to fine location denied";
         }
-    }*/
+    }
 }

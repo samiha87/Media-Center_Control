@@ -8,7 +8,7 @@
 #include "displaylogic.h"
 #include "audiologic.h"
 #include "lightslogic.h"
-#include "blehandler.h"
+#include "device.h"
 
 class ControlPageHandler : public ObjectHandler
 {
@@ -40,6 +40,7 @@ public:
 signals:
     // Emitting this signal tells QML element to update image properties
     void statusChanged();
+    void textChanged();
     void commandMessage(QString message);
 
 public slots:
@@ -57,6 +58,7 @@ public slots:
     // Return display image source
     QVariant getLightsSource();
     void handleCommunication(QString msg);
+    QVariant getStatusText();
 
 private:
     QString displayImageSource;
@@ -67,8 +69,13 @@ private:
     AudioLogic   audioLogic;
     LightsLogic  lightsLogic;
     QObject *commHandler;
+    Device *bleHandler;
+    QString statusMessage;
 
     QString getIconPath(QString iconName);
+private slots:
+    void connectionStatus(QString msg);
+    void messageReceived(QString msg);
 
 
 };

@@ -14,16 +14,19 @@ DisplayLogic::~DisplayLogic() {
 
 void DisplayLogic::onClicked() {
     qDebug() << "DisplayLogic::onClicked()";
-    setPower(!powerState);
+    if(powerState) powerState= false;
+    else powerState = true;
+    setPower(powerState);
     if(powerState)qDebug() << "DisplayLogic::onClicked() display is on";
     else qDebug() << "DisplayLogic::onClicked() display is off";
 }
 
 void DisplayLogic::setPower(bool state) {
     powerState = state;
-    //if(powerState) emit cmdMessage("PWR:ON");
-   // else emit cmdMessage("PWR:OFF");
     emit statusChanged();
+    if(powerState) emit cmdMessage("PWR:ON");
+    else emit cmdMessage("PWR:OFF");
+
 }
 
 bool DisplayLogic::getPower() {

@@ -14,6 +14,9 @@ Page {
             musicButtonImage.source = getAudioSource()
             lightsButtonImage.source = getLightsSource()
         }
+        onTextChanged: {
+            statusLabel.text= getStatusText()
+        }
     }
 
     Button {
@@ -106,7 +109,8 @@ Page {
 
     // Text should slide here
     Label {
-        text: qsTr("Status bar")
+        id: statusLabel
+        text: controlHandler.getStatusText()
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 10
         anchors.right: parent.right

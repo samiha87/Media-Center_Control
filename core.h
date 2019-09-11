@@ -5,7 +5,7 @@
 // Project includes
 #include "controlpagehandler.h"
 #include "playerpagehandler.h"
-#include "blehandler.h"
+#include "device.h"
 
 class Core : public QObject
 {
@@ -19,7 +19,6 @@ signals:
 private:
     ControlPageHandler *controlPage;
     PlayerPageHandler *playerPage;
-    BLEHandler *bleHandler;
 
     void initIcons();
     void checkPermissions();

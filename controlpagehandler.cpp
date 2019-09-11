@@ -6,11 +6,19 @@ ControlPageHandler::ControlPageHandler(QObject *parent) : ObjectHandler(parent)
     displayImageSource = getIconPath("projectoroff");
     audioImageSource = getIconPath("speakeroff");
     lightImageSource = getIconPath("lightbulboff");
+    statusMessage = "";
+    bleHandler = new Device();
     // Connect signals and slots
     QObject::connect(&displayLogic, SIGNAL(statusChanged()), this, SLOT(displayStatusChanged()));
     QObject::connect(&audioLogic, SIGNAL(statusChanged()), this, SLOT(audioStatusChanged()));
     QObject::connect(&lightsLogic, SIGNAL(statusChanged()), this, SLOT(lightsStatusChanged()));
     connect(&displayLogic, SIGNAL(cmdMessage(QString)), this, SLOT(handleCommunication(QString)));
+
+    connect(&displayLogic, SIGNAL(cmdMessage(QString)), bleHandler, SLOT(transmitData(QString)));
+    connect(bleHandler, SIGNAL(updateStatus(QString)), this, SLOT(connectionStatus(QString)));
+    connect(bleHandler, SIGNAL(messageReceived(QString)), this, SLOT(messageReceived(QString)));
+    // Needsto becalled after connections are made
+    bleHandler->startDeviceDiscovery();
 }
 
 void ControlPageHandler::setDisplayImage(QString src) {
@@ -65,12 +73,14 @@ void ControlPageHandler::setCommunication(QObject *com) {
    qDebug() << "ControlPageHandler::setCommunication() for BLE";
    commHandler = com;
    // If ble
-   connect(&displayLogic, SIGNAL(cmdMessage(QString)), qobject_cast<BLEHandler *>(commHandler), SLOT(transmitData(QString)));
+   qobject_cast<Device *>(commHandler)->startDeviceDiscovery();
+
+
 };
 // TODO move this somewhere else, this should not exist on page handler
 void ControlPageHandler::handleCommunication(QString msg) {
     qDebug() << "ControlPageHandler::handleCommunication() " << msg;
-    qobject_cast<BLEHandler *>(commHandler)->transmitData(msg);
+    bleHandler->transmitData(msg);
 }
 
 // Slots
@@ -115,4 +125,20 @@ QVariant ControlPageHandler::getAudioSource() {
 QVariant ControlPageHandler::getLightsSource() {
     qDebug() << "ControlPageHandler::getDisplaySource()";
     return  QVariant(lightImageSource);   // QML element requires var
+}
+
+void ControlPageHandler::connectionStatus(QString msg) {
+    qDebug() << "Message"<< msg;
+    statusMessage = msg;
+    // Update qml
+    emit textChanged();
+}
+
+
+QVariant ControlPageHandler::getStatusText() {
+    return statusMessage;
+}
+
+void ControlPageHandler::messageReceived(QString msg) {
+    qDebug() << "ControlPageHandler::messageReceived() "<< msg;
 }

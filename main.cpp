@@ -27,7 +27,5 @@ int main(int argc, char *argv[])
     // Ensure main screen size matches phone
     engine.rootObjects().at(0)->setProperty("dashboardWidth", rect.width());
     engine.rootObjects().at(0)->setProperty("dashboardHeigh", rect.height());
-
-
     return app.exec();
 }

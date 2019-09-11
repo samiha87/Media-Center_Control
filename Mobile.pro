@@ -15,9 +15,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         audiologic.cpp \
-        blehandler.cpp \
         controlpagehandler.cpp \
         core.cpp \
+        device.cpp \
         displaylogic.cpp \
         lightslogic.cpp \
         main.cpp \
@@ -42,9 +42,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     audiologic.h \
-    blehandler.h \
     controlpagehandler.h \
     core.h \
+    device.h \
     devicelogic.h \
     displaylogic.h \
     lightslogic.h \

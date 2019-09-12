@@ -30,5 +30,6 @@
         <file>ArrowButton.qml</file>
         <file>icons/speakeroff.png</file>
         <file>icons/speakermute.png</file>
+        <file>icons/scan.gif</file>
     </qresource>
 </RCC>

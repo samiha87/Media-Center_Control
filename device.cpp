@@ -364,6 +364,7 @@ void Device::serviceDetailsDiscovered(QLowEnergyService::ServiceState newState)
                 connect(transmitService, SIGNAL(characteristicChanged(QLowEnergyCharacteristic, QByteArray)), this, SLOT(serialReadValue(QLowEnergyCharacteristic,QByteArray)));
                 connect(transmitService, SIGNAL(descriptorWritten(QLowEnergyDescriptor, QByteArray)), this, SLOT(serialDescriptorWrite(QLowEnergyDescriptor,QByteArray)));
                 setUpdate("Bluetooth connected");
+                setDeviceVisuallyConnected(true);
             }
         }
     }
@@ -472,7 +473,7 @@ void Device::serialReadValue(const QLowEnergyCharacteristic &c, const QByteArray
         rxMessage.append(temp);
        // qDebug() << "Device::serialReadValue, whole message in bytes: " << rxMessage;
         emit messageReceived(rxMessage);
-        setDeviceVisuallyConnected(true);
+
         return;
     } else if(value.contains(startByte) && !enableMessageReading) {
         rxMessage.clear();
@@ -529,4 +530,8 @@ void Device::transmitData(QString cmd)
     msg.append('*');    // End byte
     transmitService->writeCharacteristic(transmitService->characteristics().at(transmitPointer), msg, QLowEnergyService::WriteWithoutResponse);
     //qDebug() << "Device::transmitData() " + msg;
+}
+
+bool Device::isConnected(){
+   return deviceVisuallyConnected;
 }

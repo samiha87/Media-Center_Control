@@ -130,10 +130,15 @@ QVariant ControlPageHandler::getLightsSource() {
     return  QVariant(lightImageSource);   // QML element requires var
 }
 
+QVariant ControlPageHandler::getBleConnected() {
+    return QVariant(bleHandler->isConnected());
+}
+
 void ControlPageHandler::connectionStatus(QString msg) {
     qDebug() << "Message"<< msg;
     statusMessage = msg;
     // Update qml
+    if(statusMessage.contains("connected")) emit statusChanged();
     emit textChanged();
 }
 

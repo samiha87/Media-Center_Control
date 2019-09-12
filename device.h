@@ -98,7 +98,7 @@ public:
 
     bool isRandomAddress() const;
     void setRandomAddress(bool newValue);
-
+    bool isConnected();
 signals:
     void messageReceived(QByteArray msg);
     void updateStatus(QString msg);

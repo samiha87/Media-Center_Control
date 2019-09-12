@@ -57,6 +57,8 @@ public slots:
     QVariant getAudioSource();
     // Return display image source
     QVariant getLightsSource();
+    // Return bluetooth connection status
+    QVariant getBleConnected();
     void handleCommunication(QString msg);
     QVariant getStatusText();
 private:

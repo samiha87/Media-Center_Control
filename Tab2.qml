@@ -13,10 +13,20 @@ Page {
             displayButtonImage.source = getDisplaySource()
             musicButtonImage.source = getAudioSource()
             lightsButtonImage.source = getLightsSource()
+            bleScan.playing = !getBleConnected()
         }
         onTextChanged: {
             statusLabel.text= getStatusText()
         }
+    }
+    AnimatedImage {
+        id: bleScan
+        source: "qrc:/icons/scan.gif"
+        width: 0.4*parent.width
+        height: 0.4*parent.height
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        playing: !controlHandler.getBleConnected()
     }
 
     Button {

@@ -363,7 +363,6 @@ void Device::serviceDetailsDiscovered(QLowEnergyService::ServiceState newState)
                 connect(transmitService, SIGNAL(stateChanged(QLowEnergyService::ServiceState)), this, SLOT(serialStateChanged(QLowEnergyService::ServiceState)));
                 connect(transmitService, SIGNAL(characteristicChanged(QLowEnergyCharacteristic, QByteArray)), this, SLOT(serialReadValue(QLowEnergyCharacteristic,QByteArray)));
                 connect(transmitService, SIGNAL(descriptorWritten(QLowEnergyDescriptor, QByteArray)), this, SLOT(serialDescriptorWrite(QLowEnergyDescriptor,QByteArray)));
-                setUpdate("Bluetooth connected");
                 setDeviceVisuallyConnected(true);
             }
         }
@@ -445,10 +444,11 @@ void Device::serialStateChanged(QLowEnergyService::ServiceState s)
 void Device::setDeviceVisuallyConnected(bool state)
 {
     if(!deviceVisuallyConnected && state == true) {
+        deviceVisuallyConnected = state;
        setUpdate("Bluetooth connected");
        qDebug() << "Device::setDeviceVisuallyConnected(): connected";
     }
-    deviceVisuallyConnected = state;
+
 }
 
 void Device::serialReadValue(const QLowEnergyCharacteristic &c, const QByteArray &value)

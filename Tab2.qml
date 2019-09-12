@@ -14,6 +14,7 @@ Page {
             musicButtonImage.source = getAudioSource()
             lightsButtonImage.source = getLightsSource()
             bleScan.playing = !getBleConnected()
+            bleScan.visible= !getBleConnected();
         }
         onTextChanged: {
             statusLabel.text= getStatusText()

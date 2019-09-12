@@ -31,5 +31,6 @@
         <file>icons/speakeroff.png</file>
         <file>icons/speakermute.png</file>
         <file>icons/scan.gif</file>
+        <file>icons/Arrow/arrow_animation_1.png</file>
     </qresource>
 </RCC>

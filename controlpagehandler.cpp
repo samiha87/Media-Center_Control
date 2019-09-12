@@ -146,6 +146,10 @@ QVariant ControlPageHandler::getStatusText() {
     return statusMessage;
 }
 
+QVariant ControlPageHandler::getVolumeActive() {
+    return audioLogic.getPower();
+}
+
 void ControlPageHandler::messageReceived(QByteArray msg) {
     qDebug() << "ControlPageHandler::messageReceived() "<< msg;
     // Parse message

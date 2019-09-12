@@ -3,13 +3,13 @@ import QtQuick.Controls 2.1
 // Volume button with animation
 Button {
     id: volumeDownButton
-    width: 50;
+    width: 50
     height: 50
     background: Image {
         id:volumeDownButtonImage
         anchors.fill: parent
         fillMode: Image.PreserveAspectFit
-        source: "qrc:/icons/Arrow/arrow1.png"
+        source: "qrc:/icons/Arrow/arrow_animation_1.png"
     }
 
     onPressed: {
@@ -60,7 +60,7 @@ Button {
                volumeDownButtonAnimationReleased.visible = false
                volumeDownButtonAnimationReleased.playing = false
                volumeDownButtonImage.visible = true
-               volumeDownButtonImage.source = "qrc:/icons/Arrow/arrow1.png"
+               volumeDownButtonImage.source = "qrc:/icons/Arrow/arrow_animation_1.png"
            }
 
         }

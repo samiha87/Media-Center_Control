@@ -60,7 +60,10 @@ public slots:
     // Return bluetooth connection status
     QVariant getBleConnected();
     void handleCommunication(QString msg);
+    // Allows qml to get status text
     QVariant getStatusText();
+    // Determines wether volume adjustment arrow buttons are visible for user
+    QVariant getVolumeActive();
 private:
     QString displayImageSource;
     QString audioImageSource;

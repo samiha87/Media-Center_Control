@@ -16,6 +16,8 @@ void AudioLogic::onClicked() {
 
 void AudioLogic::setPower(bool state) {
     powerState = state;
+    if(powerState) emit cmdMessage("Audio,Pwr,On");
+    else emit cmdMessage("Audio,Pwr,Off");
     emit statusChanged();
 }
 
@@ -54,12 +56,26 @@ bool AudioLogic::parseMessage(QByteArray msg) {
     return change;
 }
 
+void AudioLogic::setMute(bool choice) {
+    if(choice) emit cmdMessage("Audio,Vol,Mute,On");
+    else emit cmdMessage("Audio,Vol,Mute,Off");
+    audioMute = choice;
+}
+
 bool AudioLogic::getMute() {
     return audioMute;
 }
 
 int AudioLogic::getVolume() {
     return audioVolume;
+}
+
+void AudioLogic::volumeUp() {
+    emit cmdMessage("Audio,Vol,Up");
+}
+
+void AudioLogic::volumeDown() {
+    emit cmdMessage("Audio,Vol,Down");
 }
 
 void AudioLogic::setVolume(int vol) {

@@ -14,7 +14,6 @@ Page {
             lightsButton.enabled = getBleConnected()
             volumeDownButton.enabled = getBleConnected()
             volumeUpButton.enabled = getBleConnected()
-
         }
 
         onStatusChanged: {

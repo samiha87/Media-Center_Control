@@ -35,6 +35,8 @@ public:
     Q_INVOKABLE void displayClicked();
     Q_INVOKABLE void audioClicked();
     Q_INVOKABLE void lightsClicked();
+    Q_INVOKABLE void volumeUpClicked();
+    Q_INVOKABLE void volumeDownClicked();
 
     void setCommunication(QObject *com);
 signals:

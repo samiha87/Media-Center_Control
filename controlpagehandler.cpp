@@ -15,6 +15,7 @@ ControlPageHandler::ControlPageHandler(QObject *parent) : ObjectHandler(parent)
     connect(&displayLogic, SIGNAL(cmdMessage(QString)), this, SLOT(handleCommunication(QString)));
 
     connect(&displayLogic, SIGNAL(cmdMessage(QString)), bleHandler, SLOT(transmitData(QString)));
+    connect(&audioLogic, SIGNAL(cmdMessage(QString)), bleHandler, SLOT(transmitData(QString)));
     connect(bleHandler, SIGNAL(updateStatus(QString)), this, SLOT(connectionStatus(QString)));
     connect(bleHandler, SIGNAL(messageReceived(QByteArray)), this, SLOT(messageReceived(QByteArray)));
     // Needsto becalled after connections are made
@@ -69,15 +70,24 @@ void ControlPageHandler::lightsClicked(){
     lightsLogic.onClicked();
 }
 
+void ControlPageHandler::volumeUpClicked(){
+    qDebug() << "ControlPageHandler::lightsClicked()";
+    audioLogic.volumeUp();
+}
+
+void ControlPageHandler::volumeDownClicked(){
+    qDebug() << "ControlPageHandler::lightsClicked()";
+    audioLogic.volumeDown();
+}
+
 void ControlPageHandler::setCommunication(QObject *com) {
 // TODO fix later, should be able to load different communication methods. Maybe as a list to allow different communication methods?
    qDebug() << "ControlPageHandler::setCommunication() for BLE";
    commHandler = com;
    // If ble
    qobject_cast<Device *>(commHandler)->startDeviceDiscovery();
-
-
 };
+
 // TODO move this somewhere else, this should not exist on page handler
 void ControlPageHandler::handleCommunication(QString msg) {
     qDebug() << "ControlPageHandler::handleCommunication() " << msg;
@@ -115,7 +125,7 @@ void ControlPageHandler::audioStatusChanged() {
                 setAudioImage("speakerlvl5");
             }
          } else setAudioImage("speakermute");
-    }else setAudioImage("speakeroff");
+    } else setAudioImage("speakeroff");
     // Tell QML element to update
     emit statusChanged();
 }
@@ -170,18 +180,20 @@ QVariant ControlPageHandler::getVolumeActive() {
 void ControlPageHandler::messageReceived(QByteArray msg) {
     qDebug() << "ControlPageHandler::messageReceived() "<< msg;
     // Parse message
-    bool change = false;
-
+    // Check if anything has changed. If properties are same do not update UI
+    bool changeDisplay = false;
+    bool changeAudio = false;
+    bool changeLights = false;
     if(msg.contains("Proj") || msg.contains("TV")) {
-        change = displayLogic.parseMessage(msg);
+        changeDisplay = displayLogic.parseMessage(msg);
     }
     if(msg.contains("Audio")) {
-       change = audioLogic.parseMessage(msg);
+       changeAudio = audioLogic.parseMessage(msg);
     }
     if(msg.contains("Lights")) {
-        change = lightsLogic.parseMessage(msg);
+        changeLights = lightsLogic.parseMessage(msg);
     }
-    if(change) {
+    if(changeDisplay || changeAudio || changeLights) {
         processUI();
     }
 }
@@ -190,6 +202,7 @@ void ControlPageHandler::processUI() {
 
     // If display is off
     if(!displayLogic.getPower()) {
+        if(getDisplayImage().contains("projectoron")) setDisplayImage("projectoroff");
         // Depending on settings in media center instance if display not powered all choices are set off
         // If receives message that doesn't match requested state will send command to shutdown or start depending on the current state of control
         if(audioLogic.getPower()) {
@@ -205,6 +218,7 @@ void ControlPageHandler::processUI() {
     }
     // If display is on, we assume if projector is on audio will also start
     if(displayLogic.getPower()) {
+        if(getDisplayImage().contains("projectoroff")) setDisplayImage("projectoron");
         // If audio powe is on QML activates volume adjustment
         if(!audioLogic.getPower()) audioLogic.setPower(true);
     }

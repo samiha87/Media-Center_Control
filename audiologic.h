@@ -19,10 +19,14 @@ public:
     // Set volume level
     void setVolume(int vol);
     // Return volume
+    void setMute(bool choice);
     int getVolume();
+    void volumeUp();
+    void volumeDown();
 
 signals:
    void statusChanged();
+   void cmdMessage(QString);
 
 public slots:
 private:

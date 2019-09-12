@@ -113,6 +113,7 @@ void Device::addDevice(const QBluetoothDeviceInfo &info)
             }
 
             devices.append(d);
+            // If we found ble device, no need to scan. Stops scanning other ble devices
             discoveryAgent->stop();
             emit devicesUpdated();
         }

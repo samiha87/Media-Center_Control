@@ -24,8 +24,8 @@ void DisplayLogic::onClicked() {
 void DisplayLogic::setPower(bool state) {
     powerState = state;
     emit statusChanged();
-    if(powerState) emit cmdMessage("PWR:ON");
-    else emit cmdMessage("PWR:OFF");
+    if(powerState) emit cmdMessage("Proj,Pwr,On");
+    else emit cmdMessage("Proj,Pwr,Off");
 
 }
 
@@ -37,13 +37,13 @@ bool DisplayLogic::getPower() {
 bool DisplayLogic::parseMessage(QByteArray msg) {
     // No display related message received
     bool change = false;
-    if(!msg.contains("Proj") && !msg.contains("TV")) return false;
-    if(msg.contains("Pwr,1") && !powerState) {
+    if(!msg.contains("Proj")) return false;
+    if(msg.contains("Pwr,1")) {
         powerState = true;
         qDebug() << "DisplayLogic::parseMessage() Power on ";
         change = true;
     }
-    if(msg.contains("Pwr,0") && powerState) {
+    if(msg.contains("Pwr,0")) {
         qDebug() << "DisplayLogic::parseMessage() Power off ";
         powerState = false;
         change = true;

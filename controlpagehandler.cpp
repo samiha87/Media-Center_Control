@@ -99,8 +99,22 @@ void ControlPageHandler::audioStatusChanged() {
     qDebug() << "ControlPageHandler::dispalyStatusChanged()";
     // Check power state
     if(audioLogic.getPower()) {
-        if(!audioLogic.getMute()) setAudioImage("musicon");
-        else setAudioImage("speakermute");
+        if(!audioLogic.getMute()) {
+            setAudioImage("musicon");
+            if(audioLogic.getVolume() == 0) {
+                setAudioImage("speakerlvl0");
+            } else if (audioLogic.getVolume() < 20) {
+                setAudioImage("speakerlvl1");
+            } else if (audioLogic.getVolume() < 40) {
+                setAudioImage("speakerlvl2");
+            } else if (audioLogic.getVolume() < 60) {
+                setAudioImage("speakerlvl3");
+            } else if (audioLogic.getVolume() < 80) {
+                setAudioImage("speakerlvl4");
+            } else if (audioLogic.getVolume() == 100) {
+                setAudioImage("speakerlvl5");
+            }
+         } else setAudioImage("speakermute");
     }else setAudioImage("speakeroff");
     // Tell QML element to update
     emit statusChanged();
@@ -138,7 +152,10 @@ void ControlPageHandler::connectionStatus(QString msg) {
     qDebug() << "Message"<< msg;
     statusMessage = msg;
     // Update qml
-    if(statusMessage.contains("connected")) emit statusChanged();
+    if(statusMessage.contains("connected")) {
+        emit statusChanged();
+        emit activate();
+    }
     emit textChanged();
 }
 

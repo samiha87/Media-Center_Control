@@ -7,6 +7,7 @@ AudioLogic::AudioLogic(QObject *parent) : QObject(parent)
 {
     powerState = false;
     audioMute = false;
+    audioVolume = 0;
 }
 
 void AudioLogic::onClicked() {
@@ -35,6 +36,7 @@ bool AudioLogic::parseMessage(QByteArray msg) {
             int end = msg.indexOf(",", start);
             QByteArray parsed = msg.mid(start, (end - start));
             qDebug() << "AudioLogic::parseMessage() " << parsed;
+            audioVolume = parsed.toInt();
         }
 
         if(msg.contains("Mute=On") && !audioMute) {
@@ -54,4 +56,14 @@ bool AudioLogic::parseMessage(QByteArray msg) {
 
 bool AudioLogic::getMute() {
     return audioMute;
+}
+
+int AudioLogic::getVolume() {
+    return audioVolume;
+}
+
+void AudioLogic::setVolume(int vol) {
+    if (vol < 0) vol = 0;
+    if (vol > 100) vol = 100;
+    audioVolume = vol;
 }

@@ -16,6 +16,10 @@ public:
     // Parse messag from Media Center and update status
     bool parseMessage(QByteArray msg);
     bool getMute();
+    // Set volume level
+    void setVolume(int vol);
+    // Return volume
+    int getVolume();
 
 signals:
    void statusChanged();
@@ -24,6 +28,7 @@ public slots:
 private:
    bool powerState;
    bool audioMute;
+   int audioVolume;
 };
 
 #endif // AUDIOCLASS_H

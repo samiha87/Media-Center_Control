@@ -8,6 +8,15 @@ Page {
     height: 400
     ControlHandler {
         id: controlHandler
+        onActivate:{
+            displayButton.enabled = getBleConnected()
+            speakerButton.enabled = getBleConnected()
+            lightsButton.enabled = getBleConnected()
+            volumeDownButton.enabled = getBleConnected()
+            volumeUpButton.enabled = getBleConnected()
+
+        }
+
         onStatusChanged: {
             console.log("QML, Tab2::ControlHandler() Status changed")
             console.log("QML, Tab2::ControlHandler()" + getDisplaySource())
@@ -18,34 +27,26 @@ Page {
             // BLE connection related
             bleScan.playing = !getBleConnected()
             bleScan.visible= !getBleConnected()
-            actionMask.visible = !getBleConnected()
             // Audio related
             volumeDownButton.visible = getVolumeActive()
             volumeUpButton.visible = getVolumeActive()
+            // Activate
         }
         onTextChanged: {
             statusLabel.text= getStatusText()
         }
     }
-    // Action mask rectangle exist to block any action on UI before BLE connection is established
-    Rectangle {
-        id:actionMask
-        anchors.top: parent.top
-        width: parent.width
-        anchors.bottom: statusLabel.top
-        visible: !controlHandler.getBleConnected()
-        color: "transparent"
 
-        AnimatedImage {
-            id: bleScan
-            source: "qrc:/icons/scan.gif"
-            width: 0.3 * controlPage.width
-            height: 0.3 * controlPage.height
-            anchors.verticalCenter: parent.verticalCenter
-            anchors.horizontalCenter: parent.horizontalCenter
-            playing: !controlHandler.getBleConnected()
-        }
+    AnimatedImage {
+        id: bleScan
+        source: "qrc:/icons/scan.gif"
+        width: 0.3 * controlPage.width
+        height: 0.3 * controlPage.height
+        anchors.verticalCenter: parent.verticalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
+        playing: !controlHandler.getBleConnected()
     }
+
 
     Button {
         id: displayButton
@@ -54,6 +55,7 @@ Page {
         anchors.horizontalCenter: parent.horizontalCenter
         width: 120
         height: 120
+        enabled: controlHandler.getBleConnected()
         onClicked: {
             controlHandler.displayClicked();
         }
@@ -76,6 +78,7 @@ Page {
         anchors.left: parent.left
         anchors.leftMargin: 45
         rotation: 180
+        enabled: controlHandler.getBleConnected()
         visible: controlHandler.getVolumeActive()   // If audio power is on, show button
         onPressed: {
             controlHandler.volumeDownClicked();
@@ -84,6 +87,7 @@ Page {
 
     ArrowButton {
         id: volumeUpButton
+        enabled: controlHandler.getBleConnected()
         anchors.bottom: speakerButton.top
         anchors.bottomMargin: 5
         anchors.left: parent.left
@@ -96,6 +100,7 @@ Page {
 
     Button {
         id: speakerButton
+        enabled: controlHandler.getBleConnected()
         anchors.top: displayButton.bottom
         anchors.topMargin: 50
         anchors.left: parent.left
@@ -118,6 +123,7 @@ Page {
 
     Button {
         id: lightsButton
+        enabled: controlHandler.getBleConnected()
         anchors.top: displayButton.bottom
         anchors.topMargin: 44
         anchors.right: parent.right

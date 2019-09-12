@@ -32,5 +32,11 @@
         <file>icons/speakermute.png</file>
         <file>icons/scan.gif</file>
         <file>icons/Arrow/arrow_animation_1.png</file>
+        <file>icons/speakerlvl0.png</file>
+        <file>icons/speakerlvl1.png</file>
+        <file>icons/speakerlvl2.png</file>
+        <file>icons/speakerlvl3.png</file>
+        <file>icons/speakerlvl4.png</file>
+        <file>icons/speakerlvl5.png</file>
     </qresource>
 </RCC>

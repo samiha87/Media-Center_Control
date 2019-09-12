@@ -40,6 +40,7 @@ public:
 signals:
     // Emitting this signal tells QML element to update image properties
     void statusChanged();
+    void activate();
     void textChanged();
     void commandMessage(QString message);
 

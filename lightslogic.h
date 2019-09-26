@@ -9,7 +9,9 @@ class LightsLogic : public QObject, DeviceLogic
     Q_OBJECT
 public:
     explicit LightsLogic(QObject *parent = nullptr);
-    // Toggle power state
+    // Set full lights or shut down lights
+    void onLongPress() override;
+    // ?
     void onClicked() override;
     // Set power status
     void setPower(bool state) override;

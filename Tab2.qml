@@ -6,6 +6,7 @@ Page {
     id: controlPage
     width: 600
     height: 400
+
     ControlHandler {
         id: controlHandler
         onActivate:{
@@ -32,7 +33,7 @@ Page {
             // Activate
         }
         onTextChanged: {
-            statusLabel.text= getStatusText()
+            textSlider(getStatusText())
         }
     }
 
@@ -46,7 +47,6 @@ Page {
         playing: !controlHandler.getBleConnected()
     }
 
-
     Button {
         id: displayButton
         anchors.top: parent.top
@@ -55,7 +55,13 @@ Page {
         width: 120
         height: 120
         enabled: controlHandler.getBleConnected()
+        onPressAndHold: {
+            // Turn on or off
+            controlHandler.displayLongPressed();
+        }
+
         onClicked: {
+            // Open control for inputs
             controlHandler.displayClicked();
         }
         background: Image {
@@ -106,6 +112,11 @@ Page {
         anchors.leftMargin: 20
         width: 100;
         height: 100;
+        onPressAndHold: {
+            // Tunr on or off
+            controlHandler.audioLongPressed();
+        }
+
         onClicked: {
             controlHandler.audioClicked();
         }
@@ -129,6 +140,10 @@ Page {
         anchors.rightMargin: 30
         width: 100;
         height: 100;    // TODO change icon
+        onPressAndHold: {
+            // Tunr on or off
+            controlHandler.lightsLongPressed();
+        }
         onClicked: {
             controlHandler.lightsClicked();
         }
@@ -142,17 +157,30 @@ Page {
         }
     }
 
+    // When textSlider is called, start Animation
+    // Slide statusTxt from right to left, stay a while at the middle and then continue to left and disappear
+    function textSlider(statusTxt) {
+        statusLabel.text = statusTxt
+        var pointer = ((parent.width / 2) / 40)
+        for(var i = 0; i < 40; i++ ) {
+            statusLabel.anchors.rightMargin = controlPage.width - (pointer * i)
+        }
+    }
+
     // Text should slide here
-    Label {
-        id: statusLabel
-        text: controlHandler.getStatusText()
+    Rectangle {
+        Text {
+            id: statusLabel
+            text: controlHandler.getStatusText()
+            font.pixelSize: 25
+            verticalAlignment: Text.AlignTop
+            anchors.verticalCenter: parent.verticalCenter
+            anchors.left: parent.right
+        }
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 10
         anchors.right: parent.right
         width: parent.width
-        height: parent*0.2
-        font.pixelSize: 25
-        horizontalAlignment: Text.AlignHCenter
-        verticalAlignment: Text.AlignTop
+        height: parent * 0.2
     }
 }

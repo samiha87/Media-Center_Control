@@ -176,7 +176,6 @@ void Device::scanServices(const QString &address)
     m_services.clear();
     emit servicesUpdated();
 
-
     //if(controller == 0) return;
 
     if (controller && m_previousAddress != currentDevice.getAddress()) {
@@ -449,38 +448,40 @@ void Device::setDeviceVisuallyConnected(bool state)
        setUpdate("Bluetooth connected");
        qDebug() << "Device::setDeviceVisuallyConnected(): connected";
     }
-
 }
 
 void Device::serialReadValue(const QLowEnergyCharacteristic &c, const QByteArray &value)
 {
     // ignore any other characteristic change -> shouldn't really happen though
-    //qDebug() << "Device::Serial read value: " << value;
     if (c.uuid().toString().contains("0000ffe0"))
         return;
     //const char *data = value.constData();
     QByteArray startByte = "#";
     QByteArray endByte = "*";
+    int startIndex = value.indexOf(startByte) + 1;
+    int endIndex = value.indexOf(endByte);
+    int difference = endIndex - startIndex;
 
-    if(value.contains(startByte) && value.contains(endByte)) {
+    if(difference > 5 && value.contains(startByte) && value.contains(endByte)) {
         rxMessage.clear();
         QByteArray temp;
         temp = value;
         // find index of start byte and add 1 to remove it
+        //qDebug() << "Device::serialReadValue, whole message in bytes before parsing: " << temp;
         int start = temp.indexOf(startByte) + 1;
         int end = temp.indexOf(endByte);
+        if((end - start) < 0) return;   // We have bad message
         // Remove start and end byte
         temp = temp.mid( (start), (end - 1 ));
         rxMessage.append(temp);
-       // qDebug() << "Device::serialReadValue, whole message in bytes: " << rxMessage;
+        //qDebug() << "Device::serialReadValue, whole message in bytes: " << rxMessage;
         emit messageReceived(rxMessage);
-
-        return;
     } else if(value.contains(startByte) && !enableMessageReading) {
         rxMessage.clear();
         QByteArray temp;
         temp = value;
         // find index of start byte and add 1 to remove it
+        //qDebug() << "Device::serialReadValue, partial message in bytes: " << temp;
         int start = temp.indexOf(startByte) + 1;
         temp.remove(0, start);
         rxMessage.append(temp);
@@ -506,9 +507,7 @@ void Device::serialDescriptorWrite(const QLowEnergyDescriptor &d, const QByteArr
     const QLowEnergyCharacteristic hrChar = transmitService->characteristics().at(transmitPointer);
 
     if (!hrChar.isValid()) return;
-
     QLowEnergyDescriptor m_notificationDesc = hrChar.descriptor(QBluetoothUuid::ClientCharacteristicConfiguration);
-
     if (d.isValid() && d == m_notificationDesc && value == QByteArray("0000")) {
         //disabled notifications -> assume disconnect intent
         controller->disconnectFromDevice();

@@ -13,6 +13,8 @@ class DisplayLogic : public QObject, public DeviceLogic
 public:
     explicit DisplayLogic(QObject *parent = nullptr);
     ~DisplayLogic() override;
+    // Turn display on or off
+    void onLongPress() override;
     // Control page icon clicked event
     void onClicked() override;
     // Return power of current device
@@ -27,6 +29,7 @@ signals:
     void cmdMessage(QString);
 public slots:
 private:
+    bool requestedPowerState;
     bool powerState;
     int lampHours;
 };

@@ -5,6 +5,7 @@
 class DeviceLogic {
 public:
     virtual ~DeviceLogic() {}
+    virtual void onLongPress() = 0;
     virtual void onClicked() = 0;
     virtual bool getPower() = 0;
     virtual void setPower(bool state) = 0;

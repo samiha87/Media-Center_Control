@@ -10,8 +10,16 @@ AudioLogic::AudioLogic(QObject *parent) : QObject(parent)
     audioVolume = 0;
 }
 
-void AudioLogic::onClicked() {
+void AudioLogic::onLongPress() {
     setPower(!powerState);
+}
+
+void AudioLogic::onClicked() {
+    // Already activated
+    if(!powerState) return;
+    if(audioMute) {
+        setMute(false);
+    } else setMute(true);
 }
 
 void AudioLogic::setPower(bool state) {
@@ -60,6 +68,7 @@ void AudioLogic::setMute(bool choice) {
     if(choice) emit cmdMessage("Audio,Vol,Mute,On");
     else emit cmdMessage("Audio,Vol,Mute,Off");
     audioMute = choice;
+    emit statusChanged();
 }
 
 bool AudioLogic::getMute() {

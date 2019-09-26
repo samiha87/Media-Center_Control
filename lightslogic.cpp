@@ -1,3 +1,6 @@
+// Qt Includes
+#include <QDebug>
+// Project Includes
 #include "lightslogic.h"
 
 LightsLogic::LightsLogic(QObject *parent) : QObject(parent)
@@ -5,8 +8,13 @@ LightsLogic::LightsLogic(QObject *parent) : QObject(parent)
     powerState = false;
 }
 
-void LightsLogic::onClicked(){
+void LightsLogic::onLongPress(){
     setPower(!powerState);
+}
+
+void LightsLogic::onClicked(){
+    qDebug() << "LightsLogic::onClicked()";
+   // setPower(!powerState);
 }
 
 void LightsLogic::setPower(bool state) {

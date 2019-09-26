@@ -31,12 +31,27 @@ public:
     void setLightImage(QString src);
     // Return light image source
     QString getLightImage();
-
+    // Click events
+    // Pop up a matrix menu, lets user chose what wants to display
+    // If user have a matrix 2HDMI input and 1 hdmi output. Nintendo is on input 1. Pressing Nintendo
+    // from input menut drives input 1 to output 1 and displays nintedo on dispaly.
     Q_INVOKABLE void displayClicked();
+    // Set mute on or off
     Q_INVOKABLE void audioClicked();
+    // Popup a lights preset menu
     Q_INVOKABLE void lightsClicked();
+    // Adjust volume up
     Q_INVOKABLE void volumeUpClicked();
+    // Adjust volume down
     Q_INVOKABLE void volumeDownClicked();
+
+    // Press and hold events
+    // Turn on or off display
+    Q_INVOKABLE void displayLongPressed();
+    // Turn on or off audio
+    Q_INVOKABLE void audioLongPressed();
+    // Turn on or off master lights
+    Q_INVOKABLE void lightsLongPressed();
 
     void setCommunication(QObject *com);
 signals:

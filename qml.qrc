@@ -4,7 +4,6 @@
         <file>Tab1.qml</file>
         <file>Tab2.qml</file>
         <file>main.qml</file>
-        <file>qtquickcontrols2.conf</file>
         <file>icons/arrowactivedown.png</file>
         <file>icons/arrowactiveup.png</file>
         <file>icons/arrowdown.png</file>

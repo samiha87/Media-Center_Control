@@ -11,7 +11,7 @@ class AudioLogic : public QObject, DeviceLogic
 public:
     explicit AudioLogic(QObject *parent = nullptr);
     // called when speaker icon is pressed for long time
-    void onLongPress();
+    void onLongPress() override;
     // Called when speaker icon clicked
     void onClicked() override;
     void setPower(bool state) override;

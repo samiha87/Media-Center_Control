@@ -57,33 +57,33 @@ QString ControlPageHandler::getIconPath(QString iconName) {
 void ControlPageHandler::displayClicked() {
     QString data = "Proj,Pwr,On";
    // emit commandMessage(data);
-    //qDebug() << "ControlPageHandler::displayClicked()";
-    //displayLogic.onClicked();
+    qDebug() << "ControlPageHandler::displayClicked()";
+    displayLogic.onClicked();
     processUI();
 }
 void ControlPageHandler::audioClicked() {
-    //qDebug() << "ControlPageHandler::audioClicked()";
+    qDebug() << "ControlPageHandler::audioClicked()";
     audioLogic.onClicked();
 }
 void ControlPageHandler::lightsClicked(){
-    //qDebug() << "ControlPageHandler::lightsClicked()";
+    qDebug() << "ControlPageHandler::lightsClicked()";
     lightsLogic.onClicked();
 }
 
 void ControlPageHandler::volumeUpClicked(){
-    //qDebug() << "ControlPageHandler::lightsClicked()";
+    qDebug() << "ControlPageHandler::lightsClicked()";
     audioLogic.volumeUp();
 }
 
 void ControlPageHandler::volumeDownClicked(){
-    //qDebug() << "ControlPageHandler::lightsClicked()";
+    qDebug() << "ControlPageHandler::lightsClicked()";
     audioLogic.volumeDown();
 }
 
 void ControlPageHandler::displayLongPressed() {
     QString data = "Proj,Pwr,On";
    // emit commandMessage(data);
-    //qDebug() << "ControlPageHandler::displayClicked()";
+    qDebug() << "ControlPageHandler::displayClicked()";
     displayLogic.onLongPress();
     // Ensure audio stops
     if(displayLogic.getPower()) audioLogic.setMute(false);
@@ -112,14 +112,14 @@ void ControlPageHandler::setCommunication(QObject *com) {
 
 // TODO move this somewhere else, this should not exist on page handler
 void ControlPageHandler::handleCommunication(QString msg) {
-    //qDebug() << "ControlPageHandler::handleCommunication() " << msg;
+    qDebug() << "ControlPageHandler::handleCommunication() " << msg;
     bleHandler->transmitData(msg);
 }
 
 // Slots
 // QML property updates
 void ControlPageHandler::displayStatusChanged() {
-    //qDebug() << "ControlPageHandler::dispalyStatusChanged()";
+    qDebug() << "ControlPageHandler::dispalyStatusChanged()";
     // Check power state
     if(displayLogic.getPower()) setDisplayImage("projectoron");
     else setDisplayImage("projectoroff");
@@ -128,7 +128,7 @@ void ControlPageHandler::displayStatusChanged() {
 }
 
 void ControlPageHandler::audioStatusChanged() {
-    //qDebug() << "ControlPageHandler::dispalyStatusChanged()";
+    qDebug() << "ControlPageHandler::dispalyStatusChanged()";
     // Check power state
     if(audioLogic.getPower()) {
         if(!audioLogic.getMute()) {
@@ -153,7 +153,7 @@ void ControlPageHandler::audioStatusChanged() {
 }
 
 void ControlPageHandler::lightsStatusChanged() {
-    //qDebug() << "ControlPageHandler::dispalyStatusChanged()";
+    qDebug() << "ControlPageHandler::dispalyStatusChanged()";
     // Check power state
     if(lightsLogic.getPower()) setLightImage("lightbulbon");
     else setLightImage("lightbulboff");
@@ -162,17 +162,17 @@ void ControlPageHandler::lightsStatusChanged() {
 }
 
 QVariant ControlPageHandler::getDisplaySource() {
-    //qDebug() << "ControlPageHandler::getDisplaySource()";
+    qDebug() << "ControlPageHandler::getDisplaySource()";
     return  QVariant(displayImageSource);   // QML element requires var
 }
 
 QVariant ControlPageHandler::getAudioSource() {
-    //qDebug() << "ControlPageHandler::getAudioSource()";
+    qDebug() << "ControlPageHandler::getAudioSource()";
     return  QVariant(audioImageSource);   // QML element requires var
 }
 
 QVariant ControlPageHandler::getLightsSource() {
-    //qDebug() << "ControlPageHandler::getLightsSource()";
+    qDebug() << "ControlPageHandler::getLightsSource()";
     return  QVariant(lightImageSource);   // QML element requires var
 }
 
@@ -203,22 +203,16 @@ void ControlPageHandler::messageReceived(QByteArray msg) {
     qDebug() << "ControlPageHandler::messageReceived() "<< msg;
     // Parse message
     // Check if anything has changed. If properties are same do not update UI
-    bool changeDisplay = false;
-    bool changeAudio = false;
-    bool changeLights = false;
-    if(msg.contains("Proj") || msg.contains("TV")) {
-        changeDisplay = displayLogic.parseMessage(msg);
-    }
+    bool changeDisplay, changeAudio, changeLights;
+    changeDisplay = changeAudio = changeLights= false;
+
+    if(msg.contains("Proj") || msg.contains("TV")) changeDisplay = displayLogic.parseMessage(msg);
     if(msg.contains("Audio")) {
-       changeAudio = audioLogic.parseMessage(msg);
+      changeAudio = audioLogic.parseMessage(msg);
       audioStatusChanged();
     }
-    if(msg.contains("Lights")) {
-        changeLights = lightsLogic.parseMessage(msg);
-    }
-    if(changeDisplay || changeAudio || changeLights) {
-        processUI();
-    }
+    if(msg.contains("Lights"))  changeLights = lightsLogic.parseMessage(msg);
+    if(changeDisplay || changeAudio || changeLights) processUI();
 }
 
 void ControlPageHandler::processUI() {
@@ -235,7 +229,6 @@ void ControlPageHandler::processUI() {
         if(lightsLogic.getPower()) {
             lightsLogic.setPower(false);
         }
-        //Update UI
 
         return;
     }

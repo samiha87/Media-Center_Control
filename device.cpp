@@ -80,6 +80,7 @@ Device::~Device()
 
 void Device::startDeviceDiscovery()
 {
+    qDebug() << "Device::StartDeviceDiscovery()";
     updateStatus("Connecting bluetooth");
     qDeleteAll(devices);
     qDeleteAll(m_services);
@@ -103,7 +104,7 @@ void Device::addDevice(const QBluetoothDeviceInfo &info)
     if (info.coreConfigurations() & QBluetoothDeviceInfo::LowEnergyCoreConfiguration) {
         DeviceInfo *d = new DeviceInfo(info);
 
-        if(d->getName().startsWith("Totem") ) {
+        if(d->getName().startsWith("Media_Center") ) {
             qDebug() << "Device::addDevice() " << d->getName();
             // Check that we don't already contain this
             for(int i = 0; i < devices.count(); ++i) {
@@ -111,7 +112,7 @@ void Device::addDevice(const QBluetoothDeviceInfo &info)
                     return;
                 }
             }
-
+            qDebug() << "Device::addDevice() Found media center";
             devices.append(d);
             // If we found ble device, no need to scan. Stops scanning other ble devices
             discoveryAgent->stop();
@@ -129,9 +130,12 @@ void Device::deviceScanFinished()
     discoveryAgent->stop();
     emit qstateChanged();
     // Start connecting to device
-    if(devices.count() == 0) return;
+    if(devices.count() == 0) {
+        qDebug() << "Device::deviceScanFinished() No devices found";
+        startDeviceDiscovery();
+        return;
+    }
     DeviceInfo *d = qobject_cast<DeviceInfo *>(devices.first());
-
     scanServices(d->getAddress());
 }
 
@@ -186,17 +190,11 @@ void Device::scanServices(const QString &address)
     if (!controller) {
 
         controller = new QLowEnergyController(currentDevice.getDevice());
-        connect(controller, SIGNAL(connected()),
-                this, SLOT(deviceConnected()));
-        connect(controller, SIGNAL(error(QLowEnergyController::Error)),
-                this, SLOT(errorReceived(QLowEnergyController::Error)));
-        connect(controller, SIGNAL(disconnected()),
-                this, SLOT(deviceDisconnected()));
-        connect(controller, SIGNAL(serviceDiscovered(QBluetoothUuid)),
-                this, SLOT(addLowEnergyService(QBluetoothUuid)));
-        connect(controller, SIGNAL(discoveryFinished()),
-                this, SLOT(serviceScanDone()));
-    } else {
+        connect(controller, SIGNAL(connected()), this, SLOT(deviceConnected()));
+        connect(controller, SIGNAL(error(QLowEnergyController::Error)), this, SLOT(errorReceived(QLowEnergyController::Error)));
+        connect(controller, SIGNAL(disconnected()), this, SLOT(deviceDisconnected()));
+        connect(controller, SIGNAL(serviceDiscovered(QBluetoothUuid)), this, SLOT(addLowEnergyService(QBluetoothUuid)));
+        connect(controller, SIGNAL(discoveryFinished()), this, SLOT(serviceScanDone()));
     }
 
     if (isRandomAddress())
@@ -218,13 +216,9 @@ void Device::addLowEnergyService(const QBluetoothUuid &serviceUuid)
     }
     ServiceInfo *serv = new ServiceInfo(service);
     qDebug() << "Adding new ble service: "<< serv->getUuid();
-    for(int i = 0; i < m_services.count(); ++i) {
-        if(qobject_cast<ServiceInfo *>(m_services.value(i))->getUuid() == serv->getUuid()) return;
-    }
-
+    for(int i = 0; i < m_services.count(); ++i) if(qobject_cast<ServiceInfo *>(m_services.value(i))->getUuid() == serv->getUuid()) return;
     m_services.append(serv);
     if(serv->isTransfer()) {
-
         // Search characteristics and connect
         connectToService(serv->getUuid());
     }
@@ -315,19 +309,15 @@ void Device::deviceDisconnected()
     emit qstateChanged();
 }
 
-
 void Device::serviceDetailsDiscovered(QLowEnergyService::ServiceState newState)
 {
     if (newState != QLowEnergyService::ServiceDiscovered) {
-        if (newState != QLowEnergyService::DiscoveringServices) {
-            QMetaObject::invokeMethod(this, "characteristicsUpdated", Qt::QueuedConnection);
-        }
+        if (newState != QLowEnergyService::DiscoveringServices) QMetaObject::invokeMethod(this, "characteristicsUpdated", Qt::QueuedConnection);
         return;
     }
 
     QLowEnergyService *service = qobject_cast<QLowEnergyService *>(sender());
-    if (!service)
-        return;
+    if (!service) return;
 
     const QList<QLowEnergyCharacteristic> chars = service->characteristics();
     foreach (const QLowEnergyCharacteristic &ch, chars) {
@@ -337,7 +327,6 @@ void Device::serviceDetailsDiscovered(QLowEnergyService::ServiceState newState)
             //qDebug() << service->serviceUuid();
             if(service->serviceUuid().toString().contains("0000ffe0") ) {
                 if(transmitService != nullptr) {
-                    //delete transmitService;
                     transmitService = nullptr;
                     transmitPointer = 0;
                 }
@@ -353,8 +342,7 @@ void Device::serviceDetailsDiscovered(QLowEnergyService::ServiceState newState)
                     break;
                 }
 
-                QLowEnergyDescriptor m_notificationDesc = hrChar.descriptor(
-                            QBluetoothUuid::ClientCharacteristicConfiguration);
+                QLowEnergyDescriptor m_notificationDesc = hrChar.descriptor(QBluetoothUuid::ClientCharacteristicConfiguration);
                 if (m_notificationDesc.isValid()) {
                     // Enable notifications
                     transmitService->writeDescriptor(m_notificationDesc, QByteArray::fromHex("0100"));
@@ -382,7 +370,7 @@ bool Device::state()
 {
     return m_deviceScanState;
 }
-// 00002a05-0000-1000-8000-00805f9b34fb for service 00001801-0000-1000-8000-00805f9b34fb
+
 bool Device::hasControllerError() const
 {
     if (controller && controller->error() != QLowEnergyController::NoError)
@@ -416,7 +404,7 @@ void Device::readData()
 
 void Device::serialStateChanged(QLowEnergyService::ServiceState s)
 {
-    //qDebug() << "Serial state changed";
+    qDebug() << "Serial state changed";
     switch (s) {
     case QLowEnergyService::ServiceDiscovered:
     {
@@ -504,6 +492,7 @@ void Device::serialReadValue(const QLowEnergyCharacteristic &c, const QByteArray
 void Device::serialDescriptorWrite(const QLowEnergyDescriptor &d, const QByteArray &value)
 {
     // Disconnect from device
+    qDebug() << "Device::serialDescriptorWrite() " << value;
     const QLowEnergyCharacteristic hrChar = transmitService->characteristics().at(transmitPointer);
 
     if (!hrChar.isValid()) return;
@@ -529,7 +518,7 @@ void Device::transmitData(QString cmd)
     msg.append(cmd.toLocal8Bit());  //
     msg.append('*');    // End byte
     transmitService->writeCharacteristic(transmitService->characteristics().at(transmitPointer), msg, QLowEnergyService::WriteWithoutResponse);
-    //qDebug() << "Device::transmitData() " + msg;
+    qDebug() << "Device::transmitData() " + msg;
 }
 
 bool Device::isConnected(){
